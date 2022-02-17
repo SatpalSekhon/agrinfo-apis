@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
+use Hash;
 
 class UserController extends Controller
 {
@@ -40,9 +41,18 @@ class UserController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            echo 'logged in success';
+            return response()->json([
+                'success'=> true,
+                'status'=>200,
+                'message'=> 'Logged in successfully',
+                'access_token'=>Auth::user()->createToken('access token')->plainTextToken
+            ]);
         } else{
-            echo 'invalid login';
+            return response()->json([
+                'success'=> false,
+                'status'=>401,
+                'message'=> 'Invalid login details'
+            ]);
         }
     }
 
